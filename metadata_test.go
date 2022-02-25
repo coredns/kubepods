@@ -37,10 +37,10 @@ func TestMetadata(t *testing.T) {
 	k.Metadata(ctx, state)
 
 	expect := map[string]string{
-		"kubernetes/client-namespace":          "namespace1",
-		"kubernetes/client-pod-name":           "pod1",
-		"kubernetes/client-pod-annotation-foo": "bar",
-		"kubernetes/client-pod-annotation-bar": "foo",
+		"kubepods/client-namespace":          "namespace1",
+		"kubepods/client-pod-name":           "pod1",
+		"kubepods/client-pod-annotation-foo": "bar",
+		"kubepods/client-pod-annotation-bar": "foo",
 	}
 
 	md := make(map[string]string)

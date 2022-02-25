@@ -54,9 +54,9 @@ the _kubeapi_ plugin, which should be added to the end of `plugin.cfg`.
 
 The kubepods plugin will publish the following metadata if the *metadata* plugin is also enabled:
 
-* `kubernetes/client-namespace`: the client pod's namespace
-* `kubernetes/client-pod-name`: the client pod's name
-* `kubernetes/client-pod-annotation-X`: the client pod's annotations, where `X` is the annotation name
+* `kubepods/client-namespace`: the client pod's namespace
+* `kubepods/client-pod-name`: the client pod's name
+* `kubepods/client-pod-annotation-X`: the client pod's annotations, where `X` is the annotation name
 
 This metadata is not available in `echo-ip` mode.
 

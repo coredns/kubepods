@@ -24,17 +24,17 @@ func (k *KubePods) Metadata(ctx context.Context, state request.Request) context.
 		return ctx
 	}
 
-	metadata.SetValueFunc(ctx, "kubernetes/client-namespace", func() string {
+	metadata.SetValueFunc(ctx, "kubepods/client-namespace", func() string {
 		return pod.Namespace
 	})
 
-	metadata.SetValueFunc(ctx, "kubernetes/client-pod-name", func() string {
+	metadata.SetValueFunc(ctx, "kubepods/client-pod-name", func() string {
 		return pod.Name
 	})
 
 	for key := range pod.Annotations {
 		value := pod.Annotations[key]
-		metadata.SetValueFunc(ctx, "kubernetes/client-pod-annotation-"+key, func() string {
+		metadata.SetValueFunc(ctx, "kubepods/client-pod-annotation-"+key, func() string {
 			return value
 		})
 	}
