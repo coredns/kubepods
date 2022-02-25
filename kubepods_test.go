@@ -378,8 +378,9 @@ func TestServeDNSModeEchoIP(t *testing.T) {
 func addFixtures(ctx context.Context, k *KubePods) {
 	pod1 := &core.Pod{
 		ObjectMeta: meta.ObjectMeta{
-			Name:      "pod1",
-			Namespace: "namespace1",
+			Name:        "pod1",
+			Namespace:   "namespace1",
+			Annotations: map[string]string{"foo": "bar", "bar": "foo"},
 		},
 		Status: core.PodStatus{
 			PodIPs: []core.PodIP{

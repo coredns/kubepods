@@ -50,6 +50,16 @@ To use this plugin, compile CoreDNS with this plugin added to the `plugin.cfg`. 
 the _kubernetes_ plugin if _kubepods_ is using the same zone or a superzone of _kubernetes_.  This plugin also requires
 the _kubeapi_ plugin, which should be added to the end of `plugin.cfg`.
 
+## Metadata
+
+The kubepods plugin will publish the following metadata if the *metadata* plugin is also enabled:
+
+* `kubernetes/client-namespace`: the client pod's namespace
+* `kubernetes/client-pod-name`: the client pod's name
+* `kubernetes/client-pod-annotation-X`: the client pod's annotations, where `X` is the annotation name
+
+This metadata is not available in `echo-ip` mode.
+
 ## Ready
 
 This plugin reports that it is ready to the _ready_ plugin once it has received the complete list of Pods
