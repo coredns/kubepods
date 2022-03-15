@@ -29,6 +29,8 @@ type KubePods struct {
 	ttl  uint32
 	mode int
 
+	autoPathSearch []string
+
 	// Kubernetes API interface
 	client     kubernetes.Interface
 	controller cache.Controller
@@ -62,10 +64,10 @@ const (
 )
 
 // Name implements the Handler interface.
-func (k KubePods) Name() string { return "kubepods" }
+func (k *KubePods) Name() string { return "kubepods" }
 
 // ServeDNS implements the plugin.Handler interface.
-func (k KubePods) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
+func (k *KubePods) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
 	state := request.Request{W: w, Req: r}
 
 	qname := state.Name()
@@ -213,7 +215,7 @@ func (k KubePods) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 	return dns.RcodeSuccess, nil
 }
 
-func (k KubePods) nxdomain(ctx context.Context, state request.Request) (int, error) {
+func (k *KubePods) nxdomain(ctx context.Context, state request.Request) (int, error) {
 	if k.Fall.Through(state.Name()) {
 		return plugin.NextOrFailure(k.Name(), k.Next, ctx, state.W, state.Req)
 	}
@@ -221,12 +223,12 @@ func (k KubePods) nxdomain(ctx context.Context, state request.Request) (int, err
 	return dns.RcodeNameError, nil
 }
 
-func (k KubePods) nodata(state request.Request) (int, error) {
+func (k *KubePods) nodata(state request.Request) (int, error) {
 	writeResponse(state.W, state.Req, nil, nil, []dns.RR{k.soa()}, dns.RcodeSuccess)
 	return dns.RcodeSuccess, nil
 }
 
-func (k KubePods) ptr(qname, qip string, pod *core.Pod) (ptrs []dns.RR) {
+func (k *KubePods) ptr(qname, qip string, pod *core.Pod) (ptrs []dns.RR) {
 	if k.mode == modeName || k.mode == modeNameAndIP {
 		ptr := &dns.PTR{
 			Hdr: dns.RR_Header{Name: qname, Rrtype: dns.TypePTR, Class: dns.ClassINET, Ttl: k.ttl},
@@ -262,7 +264,7 @@ func writeResponse(w dns.ResponseWriter, r *dns.Msg, answer, extra, ns []dns.RR,
 	w.WriteMsg(m)
 }
 
-func (k KubePods) soa() *dns.SOA {
+func (k *KubePods) soa() *dns.SOA {
 	return &dns.SOA{
 		Hdr:     dns.RR_Header{Name: k.Zones[0], Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: k.ttl},
 		Ns:      dnsutil.Join("ns.dns", k.Zones[0]),

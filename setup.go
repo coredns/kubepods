@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/miekg/dns"
 	core "k8s.io/api/core/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -107,6 +108,16 @@ func parseStanza(c *caddy.Controller) (*KubePods, error) {
 		default:
 			return nil, c.Errf("unknown property '%s'", c.Val())
 		}
+	}
+
+	if kps.mode != modeEchoIP {
+		// retrieve search zones for autopath
+		resolv, err := dns.ClientConfigFromFile("/etc/resolv.conf")
+		if err != nil {
+			return nil, err
+		}
+		plugin.Zones(resolv.Search).Normalize()
+		kps.autoPathSearch = resolv.Search
 	}
 
 	return kps, nil
